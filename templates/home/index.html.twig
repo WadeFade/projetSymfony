@@ -2,9 +2,32 @@
 
 {% block title %}Calcul dépense soirée{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="/public/css/style.css">
+{% endblock %}
+
 {% block body %}
+
+    {# TODO ajuster le design car vomito actuellement =[ #}
+
     <h1>Calcul dépense soirée</h1>
-    <h2>Vous pouvez ajouter les participants avec ce qu'ils ont dépensé</h2>
-    {{ form(formulaire) }}
+    <h2>Liste des participants avec leurs dépenses</h2>
+
+    {# TODO ajouter liens de navigations #}
+
+    <div class="container-fluid">
+        {% for p in data %}
+            <div class="container-fluid w-75 d-flex flex-row justify-content-around align-items-center bg-light mb-3">
+                <div class="p-2 m-2 bd-highlight bg-info">{{ p.nom }}</div>
+                <div class="p-2 m-2 bd-highlight">{{ p.prenom }}</div>
+                <div class="p-2 m-2 bd-highlight">{{ p.depense }}</div>
+                <div class="p-2 m-2 bd-highlight">
+                    <div class="mb-2">Doit recevoir / donner</div>
+                    <div>30€</div>
+                </div>
+                <div class="p-2 m-2 bg-danger text-danger h-25">.</div>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}
