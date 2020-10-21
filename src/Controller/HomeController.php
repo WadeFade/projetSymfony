@@ -38,6 +38,8 @@ class HomeController extends AbstractController
 
 //TODO faire les calculs etc...
 
+
+
         return $this->render('home/index.html.twig', [
             'data' => $dataToShow,
         ]);
@@ -91,11 +93,18 @@ class HomeController extends AbstractController
                     "prenom" => $data['prenom'],
                     "depense" => $data['depense'],
                 );
-                $dataDecoded[] = $extra;
-                $finalData = json_encode($dataDecoded, true);
+                if (!is_null($dataDecoded)) {
+                    $dataReform = array_values($dataDecoded);
+                    $dataReform[] = $extra;
+                    $finalData = json_encode($dataReform, true);
+
+                } else {
+                    $dataDecoded[] = $extra;
+                    $finalData = json_encode($dataDecoded, true);
+                }
                 file_put_contents("../public/data/data.json", $finalData);
             }
-
+            return $this->redirectToRoute("home");
         }
 
 
@@ -103,4 +112,53 @@ class HomeController extends AbstractController
             'formulaire' => $form->createView(),
         ]);
     }
+
+    /**
+     * @Route("/supprimer/{nom}-{prenom}", name="supprimer_personne")
+     * @param $nom
+     * @param $prenom
+     * @param Request $request
+     * @param $dataDecoded
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function supprimer($nom, $prenom, Request $request)
+    {
+
+        $form = $this->createFormBuilder()
+            ->add("ok", SubmitType::class, ["label" => "Supprimer"])
+            ->getForm();
+
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            $contents = file_get_contents("../public/data/data.json");
+            $dataDecoded = json_decode($contents, true);
+            $dataReform = array_values($dataDecoded);
+
+            $key = array_search($prenom, array_column($dataReform, 'prenom'));
+            $key2 = array_search($nom, array_column($dataReform, 'nom'));
+
+
+            if ($key === $key2) {
+                unset($dataReform[$key]);
+            } else {
+                echo 'Person not found';
+            }
+
+            $finalData = json_encode($dataReform, true);
+            file_put_contents("../public/data/data.json", $finalData);
+
+            return $this->redirectToRoute("home");
+        }
+
+        return $this->render('home/supprimer.html.twig', [
+            'formulaire' => $form->createView(),
+            'nom' => $nom,
+            'prenom' => $prenom,
+        ]);
+    }
+
+
 }
