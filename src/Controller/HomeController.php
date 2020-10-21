@@ -36,9 +36,24 @@ class HomeController extends AbstractController
             $dataToShow = json_decode($contents, true);
         }
 
-//TODO faire les calculs etc...
+        if (!is_null($dataToShow)) {
+            $i = 0;
+            $somme = 0;
+            foreach ($dataToShow as $arr) {
+                $somme += $arr['depense'];
+                $i++;
+            }
+            $equilibre = $somme / $i;
 
-
+            $j = 0;
+            foreach ($dataToShow as $arr) {
+                $doit = $equilibre - $arr['depense'];
+                $dataToShow[$j]['doit'] = $doit;
+                $j++;
+            }
+            $dataEncoded = json_encode($dataToShow, true);
+            file_put_contents("../public/data/data.json", $dataEncoded);
+        }
 
         return $this->render('home/index.html.twig', [
             'data' => $dataToShow,
