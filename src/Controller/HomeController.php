@@ -51,12 +51,46 @@ class HomeController extends AbstractController
                 $dataToShow[$j]['doit'] = $doit;
                 $j++;
             }
+
+            $history = array();
+            $tabForList = $dataToShow;
+            $tabKey = 0;
+            for ($x = 0; $x < $j; $x++) {
+                if ($tabForList[$x]['doit'] > 0) {
+                    for ($y = 0; $y < $j; $y++) {
+                        if ($tabForList[$y]['doit'] < 0 && $tabForList[$x]['doit'] > 0) {
+
+                            if (abs($tabForList[$y]['doit']) >= $tabForList[$x]['doit']) {
+                                $history[$tabKey]['from'] = $tabForList[$x]['nom'] . ' ' . $tabForList[$x]['prenom'];
+                                $history[$tabKey]['donne'] = $tabForList[$x]['doit'];
+                                $history[$tabKey]['to'] = $tabForList[$y]['nom'] . ' ' . $tabForList[$y]['prenom'];
+                                $tabForList[$y]['doit'] += $tabForList[$x]['doit'];
+                                $tabForList[$y]['depense'] -= $tabForList[$x]['doit'];
+                                $tabForList[$x]['depense'] += $tabForList[$x]['doit'];
+                                $tabForList[$x]['doit'] = 0;
+
+                            } else { // abs($newTab[$y]['doit']) < $newTab[$x]['doit']
+                                $history[$tabKey]['from'] = $tabForList[$x]['nom'] . ' ' . $tabForList[$x]['prenom'];
+                                $history[$tabKey]['donne'] = abs($tabForList[$y]['doit']);
+                                $history[$tabKey]['to'] = $tabForList[$y]['nom'] . ' ' . $tabForList[$y]['prenom'];
+                                $tabForList[$x]['depense'] += abs($tabForList[$y]['doit']);
+                                $tabForList[$y]['depense'] -= abs($tabForList[$y]['doit']);
+                                $tabForList[$x]['doit'] -= abs($tabForList[$y]['doit']);
+                                $tabForList[$y]['doit'] = 0;
+                            }
+                            $tabKey++;
+                        }
+                    }
+                }
+            }
+
             $dataEncoded = json_encode($dataToShow, true);
             file_put_contents("../public/data/data.json", $dataEncoded);
         }
 
         return $this->render('home/index.html.twig', [
             'data' => $dataToShow,
+            'list' => $history,
         ]);
     }
 
