@@ -1,0 +1,38 @@
+[
+  {
+    "nom": "Nom1",
+    "prenom": "Mathis",
+    "depense": 20,
+    "doit": 80
+  },
+  {
+    "nom": "Nom2",
+    "prenom": "Andy",
+    "depense": 20,
+    "doit": 80
+  },
+  {
+    "nom": "Nom3",
+    "prenom": "Br\u00e9val",
+    "depense": 20,
+    "doit": 80
+  },
+  {
+    "nom": "Nom4",
+    "prenom": "Alexis",
+    "depense": 20,
+    "doit": 80
+  },
+  {
+    "nom": "Nom5",
+    "prenom": "Marion",
+    "depense": 20,
+    "doit": 80
+  },
+  {
+    "nom": "Nom6",
+    "prenom": "L\u00e9o",
+    "depense": 500,
+    "doit": -400
+  }
+]

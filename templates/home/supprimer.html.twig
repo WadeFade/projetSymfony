@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer une personne{% endblock %}
+
+{% block body %}
+    <h1>Supprimer une personne de la fiche de calcul</h1>
+    <div>Voulez-vous enlever {{ nom }} - {{ prenom }} de la fiche de calcul ?</div>
+    {{ form(formulaire) }}
+    <a class="btn btn-warning" href="{{ path('home') }}">Retour</a>
+{% endblock %}

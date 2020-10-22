@@ -1,0 +1,22 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 10% 10% 10% 10% 10%;
+    grid-template-rows: 10%;
+    gap: 10px 10px;
+    grid-template-areas:
+    "nom prenom depense doit-recevoir valide";
+}
+
+.nom {
+    grid-area: nom;
+    background-color: red;
+    color: blue;
+}
+
+.prenom { grid-area: prenom; }
+
+.depense { grid-area: depense; }
+
+.doit-recevoir { grid-area: doit-recevoir; }
+
+.valide { grid-area: valide; }
