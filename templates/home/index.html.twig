@@ -8,17 +8,21 @@
 
 {% block body %}
 
-    <h1>Calcul dépense soirée</h1>
-    <h2>Liste des participants avec leurs dépenses</h2>
-
+    <div class="container-fluid w-50 d-flex justify-content-center mb-3">
+    <h1 class="text-center text-light">Calcul dépense soirée</h1>
+    </div>
+<div class="container-fluid w-50 d-flex justify-content-center mb-3">
+    <h2 class="text-center text-light">Liste des participants avec leurs dépenses</h2>
+</div>
     <div class="container-fluid">
-        <div class="container-fluid w-75 d-flex justify-content-start mb-3">
+        <div class="container-fluid w-100 d-flex justify-content-start">
             <a class="btn btn-primary m-2" href="{{ path("ajouter_personne") }}" role="button">Ajouter un
                 participant</a>
 
         </div>
+        {% set compteur = 0 %}
         {% for p in data %}
-            <div class="container-fluid w-75 d-flex flex-row justify-content-around align-items-center bg-light mb-3">
+            <div class="container-fluid w-100 d-flex flex-row justify-content-around align-items-center bg-light mb-3">
                 <div class="d-flex flex-column pr-5 border-right">
                     <div class="mb-2">{{ p.nom }}</div>
                     <div>{{ p.prenom }}</div>
@@ -37,12 +41,12 @@
                     {% endif %}
                     <div>{{ p.doit|abs }} €</div>
                 </div>
-                {% if p.doit == 0 %}
-                    <div class="p-4 bg-success"></div>
+                {% if p.doit <= 0 %}
+                    <div class="p-4 bg-success text-light"><i class="fas fa-check"></i></div>
                 {% else %}
-                    <div class="p-4 bg-danger"></div>
+                    <div class="p-4 bg-danger text-light"><i class="fas fa-times"></i></div>
                 {% endif %}
-                <a class="btn p-0 m-0" href="{{ path('supprimer_personne',{'nom':p.nom, 'prenom':p.prenom}) }}"
+                <a class="btn p-0 m-0 text-danger" href="{{ path('supprimer_personne',{'nom':p.nom, 'prenom':p.prenom}) }}"
                    role="button">
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-square" fill="currentColor"
                          xmlns="http://www.w3.org/2000/svg">
@@ -53,9 +57,32 @@
                     </svg>
                 </a>
             </div>
+            {% set Flag=false %}
+            {% for ligne in list %}
+                {% set varUser=(p.nom ~ " " ~ p.prenom) %}
+                {% if varUser in ligne["from"] %}
+                    {% if Flag==false %}
+                        <p>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse"
+                                    data-target="#{{ (p.nom ~ "_" ~ p.prenom) }}" aria-expanded="false">
+                                Voir la liste des remboursements à effectués
+                            </button>
+                        </p>
+                        {% set Flag=true %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% for ligne in list %}
+                {% if (p.nom ~ " " ~ p.prenom)==ligne["from"] %}
+                    <div class="collapse p-2" id="{{ (p.nom ~ "_" ~ p.prenom) }}">
+                        <div class="card card-body">
+                            <p class="font-weight-bold"><span class="text-info">{{ ligne["from"] }}</span> doit donné <span class="text-primary">{{ ligne["donne"]|round(2,'common') }}€</span> à <span class="text-info">{{ ligne["to"] }}</span></p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% set Flag=false %}
         {% endfor %}
-        {{ dump(list) }}
     </div>
-
-
 {% endblock %}
